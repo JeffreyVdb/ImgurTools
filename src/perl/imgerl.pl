@@ -57,11 +57,9 @@ sub upload_file {
     }
 
     my $json_data = from_json($resp->content);
-    my %values = %{$json_data->{'upload'}{'image'}};
+    my %values = %{$json_data->{'upload'}{'links'}};
 
-    my $img_ext = substr $values{'type'}, rindex($values{'type'}, '/') + 1;
-    my $img_url = $img_prefix . $values{'hash'} . '.' . $img_ext;
-    print $img_url, "\n";
+    print $values{'original'}, "\n";
     print "\n";
 }
 
