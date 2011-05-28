@@ -1,0 +1,16 @@
+Example usages:
+
+Upload newest file in directory (defaults to newest):
+$ imgerl <directory>
+
+Alternatively
+$ imgerl --newest <directory>
+
+Oldest file
+$ imgerl --oldest <directory>
+
+Find newest file, recursive mode
+$ imgerl --recursive --newest <directory>
+
+Just upload a file
+$ imgerl /home/earl/Pictures/somefile.png
