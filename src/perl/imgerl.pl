@@ -7,8 +7,8 @@ use JSON;
 use MIME::Base64;
 
 my $version = '1.0';
-my $api_url = "http://imgur.com/api/upload.json";
-my $api_key = '0f65df4ab36ecc7f256e2bdd02116916';
+my $api_url = 'http://api.imgur.com/2/upload.json';
+my $api_key = 'cea84480cf3f38814b991094fb8be8ed';
 
 my @exts      = ('png','jpg', 'gif');
 my $verbose   = undef;
@@ -45,7 +45,9 @@ sub upload_file {
 
     my $resp  =	 $ua->post($api_url, {
 	key   => api_key,
-	image => $bufenc
+	image => $bufenc,
+	type => 'base64',
+	name => $_[0]
     });
 
     unless ($resp->is_success) {
