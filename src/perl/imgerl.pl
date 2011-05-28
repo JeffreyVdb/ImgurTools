@@ -44,7 +44,7 @@ sub upload_file {
     close $IMGF;
 
     my $resp  =	 $ua->post($api_url, {
-	key   => api_key,
+	key   => $api_key,
 	image => $bufenc,
 	type => 'base64',
 	name => $_[0]
@@ -52,11 +52,18 @@ sub upload_file {
 
     unless ($resp->is_success) {
 	print "Failed to fetch\n";
-	print $resp->content, "\n";
 	return;
     }
 
-    print $resp->content;
+    my $json_data = from_json($resp->content);
+    my %values = %{$json_data->{'upload'}{'image'}};
+
+    foreach (keys %values) {
+	next unless $values{$_};
+	printf "%-20s: %s\n", $_, $values{$_};
+    }
+
+    print "\n";
 }
 
 # Forbid the use without arguments
