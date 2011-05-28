@@ -28,11 +28,14 @@ sub usage {
 }
 
 sub scandir {
+    return undef;
 }
 
 sub upload_file {
-    my $ua    =	 LWP::UserAgent->new;
+    # We need one argument, always
+    return unless $_[0];
 
+    my $ua    =	 LWP::UserAgent->new;
     my $bufenc;
     open my $IMGF, '<', $_[0];
     binmode $IMGF;
