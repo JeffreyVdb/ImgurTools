@@ -3,15 +3,16 @@
 use Getopt::Long;
 use Pod::Usage;
 use LWP::UserAgent;
-# use JSON;
+use JSON;
+use MIME::Base64;
 
 my $version = '1.0';
 my $api_url = "http://imgur.com/api/upload.json";
-my $api_key = "cea84480cf3f38814b991094fb8be8ed";
+my $api_key = '0f65df4ab36ecc7f256e2bdd02116916';
 
 my @exts      = ('png','jpg', 'gif');
 my $verbose   = undef;
-my $recursive = undef;
+my $recursive = undef; 
 my $newest    = 1;
 my $oldest    = 0;
 my $help      = 0;
@@ -30,18 +31,30 @@ sub scandir {
 
 sub upload_file {
     my $ua    =	 LWP::UserAgent->new;
+
+    my $bufenc;
+    open my $IMGF, '<', $_[0];
+    binmode $IMGF;
+    {
+	my $buf;
+	local $/ = undef;
+	$buf = <$IMGF>;
+	$bufenc = encode_base64($buf);
+    }
+    close $IMGF;
+
     my $resp  =	 $ua->post($api_url, {
 	key   => api_key,
-	image => $_[0]
+	image => $bufenc
     });
 
-    if ($resp->is_success) {
-	print $resp->content;
+    unless ($resp->is_success) {
+	print "Failed to fetch\n";
+	print $resp->content, "\n";
+	return;
     }
-    else {
-	print 'Unsuccesful', "\n";
-	print $resp->content;
-    }
+
+    print $resp->content;
 }
 
 # Forbid the use without arguments
