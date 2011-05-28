@@ -1,0 +1,38 @@
+=head1 IMGERL
+
+man - using imgerl
+
+=head1 SYNOPSIS
+
+imgerl [options] [file|directory ...]
+
+Options:
+ --help
+ --recursive
+ --newest
+ --oldest
+ --force-mime
+
+=head1 OPTIONS
+
+=over 16
+
+=item B<--help>
+
+Print help text
+
+=item B<--recursive>
+
+Scan directories recursive while looking for pictures
+
+=item B<--newest>
+
+Find newest file in directory
+
+=back
+
+=head1 DESCRIPTION
+
+B<imgerl> - imgur uploader
+
+=cut
