@@ -9,6 +9,7 @@ use MIME::Base64;
 my $version = '1.0';
 my $api_url = 'http://api.imgur.com/2/upload.json';
 my $api_key = 'cea84480cf3f38814b991094fb8be8ed';
+my $img_prefix = 'http://i.imgur.com/';
 
 my @exts      = ('png','jpg', 'gif');
 my $verbose   = undef;
@@ -58,11 +59,9 @@ sub upload_file {
     my $json_data = from_json($resp->content);
     my %values = %{$json_data->{'upload'}{'image'}};
 
-    foreach (keys %values) {
-	next unless $values{$_};
-	printf "%-20s: %s\n", $_, $values{$_};
-    }
-
+    my $img_ext = substr $values{'type'}, rindex($values{'type'}, '/') + 1;
+    my $img_url = $img_prefix . $values{'hash'} . '.' . $img_ext;
+    print $img_url, "\n";
     print "\n";
 }
 
