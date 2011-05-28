@@ -92,6 +92,16 @@ sub upload_file {
     print "\n";
 }
 
+sub init_config {
+    my $conf_file = 'settings.pl';
+    return unless (-f $conf_file);
+
+    open (my $CONF, '<', $conf_file);
+    my $plconfig = join "", <$CONF>;
+    close $CONF;
+    eval $plconfig;
+}
+
 # Forbid the use without arguments
 if ( scalar @ARGV < 1 ) {
     exit 1;
@@ -106,6 +116,9 @@ GetOptions (
 ) || usage;
 
 usage if $help;
+
+# Some configuration
+init_config;
 
 # Now start reading arguments, quit when not file or dir
 while (my $arg = shift @ARGV) {
