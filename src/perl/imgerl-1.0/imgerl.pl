@@ -13,13 +13,14 @@ my $version = '1.0';
 my $api_url = 'http://api.imgur.com/2/upload.json';
 my $api_key = 'cea84480cf3f38814b991094fb8be8ed';
 
-my @exts      = ('png','jpg', 'gif');
-my $verbose   = undef;
-my $recursive = undef; 
-my $newest    = 1;
-my $oldest    = 0;
-my $help      = 0;
-my $file      = undef;
+my $PROG_STREAM = undef;
+my @exts	= ('png','jpg', 'gif');
+my $verbose	= undef;
+my $recursive	= undef; 
+my $newest	= 1;
+my $oldest	= 0;
+my $help	= 0;
+my $file	= undef;
 
 sub usage {
     open my $fh, '<', '/usr/share/doc/imgerl/documentation.pod';
@@ -38,7 +39,9 @@ sub upload_file {
     return unless $_[0];
 
     # Turn buffering off for progress
+    my $prev_h = select($PROG_STREAM);
     local $| = 1;
+    select($prev_h);
 
     my $ufile :shared = $_[0];
     my $finished :shared = 0;
@@ -60,16 +63,16 @@ sub upload_file {
 	my $i = 0;
 	my $message = 'uploading ' . $ufile . ' ';
 
-	print $message;
+	print $PROG_STREAM $message;
 	until ($finished) {
-	    print $progs[$i++];
+	    print $PROG_STREAM $progs[$i++];
 	    $i = 0 if $i == @progs;
 
 	    usleep(50000);
-	    print "\b";
+	    print $PROG_STREAM "\b";
 	}
 
-	print "... done\n";
+	print $PROG_STREAM "... done\n";
     };
 
     my $resp = $ua->post($api_url, { key => $api_key, image =>
@@ -107,6 +110,14 @@ GetOptions (
 
 usage if $help;
 
+# Open handle for stdout, if needed
+if (! -t STDOUT) {
+    open($PROG_STREAM, '>', '/dev/tty');
+}
+else {
+    $PROG_STREAM = STDOUT;
+}
+
 # Now start reading arguments, quit when not file or dir
 while (my $arg = shift @ARGV) {
     if (-d $arg) {
@@ -123,3 +134,5 @@ while (my $arg = shift @ARGV) {
 	next;
     }
 }
+
+close($PROG_STREAM);
