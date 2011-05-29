@@ -1,5 +1,7 @@
 #!/usr/bin/perl -w
 # Perl imgur uploader
+# Author: Jeffrey Vandenborne
+
 use Getopt::Long;
 use Pod::Usage;
 use LWP::UserAgent;
@@ -125,12 +127,12 @@ while (my $arg = shift @ARGV) {
 	upload_file $found;
     }
     # -B might be better as pictures are always in binary format
-    elsif (-f $arg) {
+    elsif (-B $arg) {
 	upload_file $arg;
     }
     else {
 	# Perhaps just exit, continue for now
-	printf STDERR "%s is not a file or directory\nSkipping.\n\n", $arg;
+	printf STDERR "%s is not a binary file or directory\nSkipping.\n\n", $arg;
 	next;
     }
 }
